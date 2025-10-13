@@ -1,0 +1,4 @@
+FROM openjdk:17
+ADD https://trialp1bjia.jfrog.io/artifactory/himaven-libs-release/spring-petclinic-3.5.0-SNAPSHOT.jar sree.jar
+EXPOSE 8080
+CMD ["java", "-jar", "sree.jar"]
