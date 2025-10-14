@@ -37,7 +37,7 @@ pipeline {
                             "files": [
                                 {
                                     "pattern": "target/*.jar",
-                                    "target": "himaven-libs-release/"
+                                    "target": "mynewmavenrepo-libs-release/"
                                 }
                             ]
                         }'''
