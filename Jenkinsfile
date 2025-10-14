@@ -49,6 +49,13 @@ pipeline {
                 }
             }
         }
+
+        stage('Docker image build') {
+            steps {
+                sh 'docker image build -t java:1.0 -f dockerfile .'
+                sh 'docker image ls'
+            }
+        }
     }
 
     post {
