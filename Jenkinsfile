@@ -52,38 +52,30 @@ pipeline {
 
         stage('Docker Image Build & Push') {
             steps {
-                sh 'docker image build -t java:1.0 -f dockerfile .'
-                sh 'docker tag java:1.0 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
-                sh 'docker push 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
+                script {
+                    sh 'docker image build -t java:1.0 -f dockerfile .'
+                    sh 'docker tag java:1.0 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
+                    sh 'docker push 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
+                }
             }
         }
 
         stage('Trivy Image Scan') {
             steps {
-                // Run Trivy scan and generate JSON report
-                sh 'trivy image 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
-                sh 'trivy image --format json --output trivy-report-BUILD_NUMBER.json 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
-            }
-        }
-
-        stage('Upload Trivy Report to JFrog') {
-            steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'JFROG_JAVA', usernameVariable: 'JFROG_USER', passwordVariable: 'JFROG_APIKEY')]) {
-                        sh '''
-                        curl -u JFROG_USER:JFROG_APIKEY -T "trivy-report-01.json" "https://your-company.jfrog.io/artifactory/trivy-reports/2025/nginx/trivy-report-BUILD_NUMBER.json"
-                        '''
-                    }
+                    sh '''
+                        trivy image \
+                        699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1 \
+                        --exit-code 0 --format table
+                    '''
                 }
             }
         }
-
     }
 
     post {
         always {
             archiveArtifacts artifacts: '**/target/*.jar'
-            archiveArtifacts artifacts: 'trivy-report-01.json'
             junit '**/target/surefire-reports/*.xml'
         }
         success {
