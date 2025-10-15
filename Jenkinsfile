@@ -71,6 +71,7 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: '**/target/*.jar'
+            archiveArtifacts artifacts: 'trivy-report.json'
             junit '**/target/surefire-reports/*.xml'
         }
         success {
