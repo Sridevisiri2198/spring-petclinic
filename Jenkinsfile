@@ -28,7 +28,7 @@ pipeline {
             }
         }
 
-        stage('Upload to JFrog') {
+        stage('Upload JAR to JFrog') {
             steps {
                 script {
                     rtUpload (
@@ -50,19 +50,31 @@ pipeline {
             }
         }
 
-        stage('Docker image build') {
+        stage('Docker Image Build & Push') {
             steps {
                 sh 'docker image build -t java:1.0 -f dockerfile .'
-                sh 'docker image ls'
                 sh 'docker tag java:1.0 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
                 sh 'docker push 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
             }
         }
-        stage('trivy image scan') {
-            steps {
-                sh 'trivy image 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
-                sh 'trivy image --format json --output trivy-report.json 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
 
+        stage('Trivy Image Scan') {
+            steps {
+                // Run Trivy scan and generate JSON report
+                sh 'trivy image 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
+                sh 'trivy image --format json --output trivy-report-BUILD_NUMBER.json 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
+            }
+        }
+
+        stage('Upload Trivy Report to JFrog') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'JFROG_JAVA', usernameVariable: 'JFROG_USER', passwordVariable: 'JFROG_APIKEY')]) {
+                        sh '''
+                        curl -u JFROG_USER:JFROG_APIKEY -T "trivy-report-01.json" "https://your-company.jfrog.io/artifactory/trivy-reports/2025/nginx/trivy-report-BUILD_NUMBER.json"
+                        '''
+                    }
+                }
             }
         }
 
@@ -71,14 +83,14 @@ pipeline {
     post {
         always {
             archiveArtifacts artifacts: '**/target/*.jar'
-            archiveArtifacts artifacts: 'trivy-report.json'
+            archiveArtifacts artifacts: 'trivy-report-01.json'
             junit '**/target/surefire-reports/*.xml'
         }
         success {
-            echo '✅ This is a good pipeline'
+            echo '✅ Pipeline completed successfully!'
         }
         failure {
-            echo '❌ This is a failed pipeline'
+            echo '❌ Pipeline failed!'
         }
     }
 }
