@@ -60,7 +60,9 @@ pipeline {
         }
         stage('trivy image scan') {
             steps {
-                sh 'trivy image 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage '
+                sh 'trivy image 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage'
+                sh 'trivy image --format xml --output trivy-report.xml 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage'
+
             }
         }
 
