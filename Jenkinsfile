@@ -54,14 +54,14 @@ pipeline {
             steps {
                 sh 'docker image build -t java:1.0 -f dockerfile .'
                 sh 'docker image ls'
-                sh 'docker tag java:1.0 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage'
-                sh 'docker push 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage'
+                sh 'docker tag java:1.0 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
+                sh 'docker push 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
             }
         }
         stage('trivy image scan') {
             steps {
-                sh 'trivy image 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage'
-                sh 'trivy image --format xml --output trivy-report.xml 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage'
+                sh 'trivy image 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
+                sh 'trivy image --format json --output trivy-report.json 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
 
             }
         }
