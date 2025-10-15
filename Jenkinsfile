@@ -54,8 +54,16 @@ pipeline {
             steps {
                 sh 'docker image build -t java:1.0 -f dockerfile .'
                 sh 'docker image ls'
+                sh 'docker tag java:1.0 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage'
+                sh 'docker push 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage'
             }
         }
+        stage('trivy image scan') {
+            steps {
+                sh 'trivy image 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage '
+            }
+        }
+
     }
 
     post {
