@@ -15,7 +15,7 @@ pipeline {
         stage('Java Build and Sonar Scan') {
             steps {
                 script {
-                    withSonarQubeEnv('SONAR') {
+                    withSonarQubeEnv('SONARQUBE') {
                         sh '''
                             mvn clean package sonar:sonar \
                               -Dsonar.host.url=https://sonarcloud.io \
@@ -32,46 +32,24 @@ pipeline {
             steps {
                 script {
                     rtUpload (
-                        serverId: 'JFROG_JAVA',
+                        serverId: 'JFROG',
                         spec: '''{
                             "files": [
                                 {
                                     "pattern": "target/*.jar",
-                                    "target": "heavenrepo-libs-release/"
+                                    "target": "practicerepo-libs-release/"
                                 }
                             ]
                         }'''
                     )
 
                     rtPublishBuildInfo (
-                        serverId: 'JFROG_JAVA'
+                        serverId: 'JFROG'
                     )
                 }
             }
         }
-
-        stage('Docker Image Build & Push') {
-            steps {
-                script {
-                    sh 'docker image build -t java:1.0 -f dockerfile .'
-                    sh 'docker tag java:1.0 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
-                    sh 'docker push 699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1'
-                }
-            }
-        }
-
-        stage('Trivy Image Scan') {
-            steps {
-                script {
-                    sh '''
-                        trivy image \
-                        699475951176.dkr.ecr.eu-north-1.amazonaws.com/javaprodimage:myjavaimage1 \
-                        --exit-code 0 --format table
-                    '''
-                }
-            }
-        }
-    }
+   }
 
     post {
         always {
