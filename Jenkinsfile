@@ -59,7 +59,7 @@ pipeline {
                     passwordVariable: 'JFROG_PASS'
                 )]) {
                     sh '''
-                        docker login trialp1bjia.jfrog.io -u $JFROG_USER -p $JFROG_PASS
+                        curl -u $JFROG_USER:$JFROG_PASS -O https://trialp1bjia.jfrog.io/artifactory/practicerepo-libs-release/spring-petclinic-3.5.0-SNAPSHOT.jar
                         docker build -t java:1.0 -f dockerfile .
                     '''
                 }
