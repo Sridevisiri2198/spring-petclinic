@@ -31,7 +31,7 @@ pipeline {
         stage('Upload JAR to JFrog') {
             steps {
                 script {
-                    rtUpload (
+                    rtUpload(
                         serverId: 'JFROG',
                         spec: '''{
                             "files": [
@@ -43,20 +43,29 @@ pipeline {
                         }'''
                     )
 
-                    rtPublishBuildInfo (
+                    rtPublishBuildInfo(
                         serverId: 'JFROG'
                     )
                 }
             }
         }
-        stage('Docker Image Build & Push') {
+
+        stage('Docker Build') {
             steps {
-                script {
-                    sh 'docker image build -t java:1.0 -f dockerfile .'
+                // Authenticate Docker to JFrog using Jenkins credentials
+                withCredentials([usernamePassword(
+                    credentialsId: 'myjfrogidentity_token', 
+                    usernameVariable: 'JFROG_USER', 
+                    passwordVariable: 'JFROG_PASS'
+                )]) {
+                    sh '''
+                        docker login trialp1bjia.jfrog.io -u $JFROG_USER -p $JFROG_PASS
+                        docker build -t java:1.0 -f dockerfile .
+                    '''
                 }
             }
-        }   
-   }
+        }
+    }
 
     post {
         always {
