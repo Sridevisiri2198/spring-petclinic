@@ -68,18 +68,18 @@ pipeline {
         }
 
         stage('Trivy Image scanning') {
-    steps {
-        sh '''
-           trivy image \
-                --format template \
-                --template "@/usr/local/share/trivy/templates/junit.tpl" \
-                --scanners vuln \
-                --severity HIGH,CRITICAL \
-                --exit-code 0 \
-                -o trivy-full-report.xml \
-                699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:jenkinspipe
-        '''
-    }
+            steps {
+                sh '''
+                    trivy image \
+                        --format template \
+                        --template "@/usr/local/share/trivy/templates/html.tpl" \
+                        --scanners vuln \
+                        --severity HIGH,CRITICAL \
+                        --exit-code 0 \
+                        -o trivy-full-report.html \
+                        699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:jenkinspipe
+                '''
+            }
 }
         
     }
@@ -88,7 +88,7 @@ pipeline {
         always {
             archiveArtifacts artifacts: '**/target/*.jar'
             junit '**/target/surefire-reports/*.xml'
-            echo '✅ Trivy table report saved to trivy-full-report.xml (not XML, cannot be parsed by JUnit)'
+            echo '✅ Trivy table report saved to trivy-full-report.html (not XML, cannot be parsed by JUnit)'
         }
         success {
             echo '✅ Pipeline completed successfully!'
