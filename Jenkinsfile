@@ -72,7 +72,7 @@ pipeline {
                 sh '''
                    trivy image \
                         --format template \
-                        --template /usr/local/share/trivy/templates/html.tpl \
+                        --template "@/usr/local/share/trivy/templates/html.tpl" \
                         -o trivy-full-report.html \
                         699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:jenkinspipe
                 '''
