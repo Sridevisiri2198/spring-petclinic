@@ -88,6 +88,7 @@ pipeline {
         always {
             archiveArtifacts artifacts: '**/target/*.jar'
             junit '**/target/surefire-reports/*.xml'
+            archiveArtifacts artifacts: 'trivy-full-report.html'
             echo '✅ Trivy table report saved to trivy-full-report.html (not XML, cannot be parsed by JUnit)'
         }
         success {
