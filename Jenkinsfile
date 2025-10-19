@@ -68,23 +68,10 @@ pipeline {
         }
 
         stage('Trivy Image scanning') {
-            steps {
-                sh '''
-                   trivy image \
-                        --format table \
-                        --scanners vuln \
-                        --severity HIGH,CRITICAL \
-                        --exit-code 0 \
-                        -o trivy-full-report.xml \
-                        699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:jenkinspipe
-                '''
-            }
-        }
-        stage('Trivy Image scanning') {
     steps {
         sh '''
            trivy image \
-                --format  table \
+                --format template \
                 --template "@/usr/local/share/trivy/templates/junit.tpl" \
                 --scanners vuln \
                 --severity HIGH,CRITICAL \
@@ -94,7 +81,7 @@ pipeline {
         '''
     }
 }
-
+        
     }
 
     post {
