@@ -71,8 +71,8 @@ pipeline {
             steps {
                 sh '''
                    trivy image \
-                        --format table \
-                        -o trivy-full-report.txt \
+                        --format  template
+                        --template "@/usr/local/share/trivy/templates/junit.tpl" \
                         699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:jenkinspipe
                 '''
             }
