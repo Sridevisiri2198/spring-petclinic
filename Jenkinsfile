@@ -61,8 +61,8 @@ pipeline {
                     sh '''
                         curl -u $JFROG_USER:$JFROG_PASS -O https://trialp1bjia.jfrog.io/artifactory/practicerepo-libs-release/spring-petclinic-3.5.0-SNAPSHOT.jar
                         docker build -t java:1.1 -f dockerfile .
-                        docker tag java:1.1 699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:App3
-                        docker push 699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:App3
+                        docker tag java:1.1 699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:todayspractice
+                        docker push 699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:todayspractice
                     '''
                 }
             }
@@ -70,7 +70,7 @@ pipeline {
         stage('Trivy Image scanning') {
             steps {
                 sh '''
-                   trivy image 699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:App3
+                   trivy image 699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:todayspractice
                 '''
             }
         }
