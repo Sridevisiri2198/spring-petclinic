@@ -72,7 +72,6 @@ pipeline {
                 sh '''
                    trivy image \
                         --format table \
-                        "@/usr/local/share/trivy/templates/junit.tpl" \
                         -o trivy-full-report.xml \
                         699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:jenkinspipe
                 '''
