@@ -72,8 +72,8 @@ pipeline {
                 sh '''
                    trivy image \
                         --format template \
-                        --template "@/usr/local/share/trivy/templates/html.tpl" \
-                        -o trivy-full-report.html \
+                        --template "@/usr/local/share/trivy/templates/junit.tpl" \
+                        -o trivy-full-report.xml \
                         699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:jenkinspipe
                 '''
             }
@@ -84,7 +84,7 @@ pipeline {
         always {
             archiveArtifacts artifacts: '**/target/*.jar'
             junit '**/target/surefire-reports/*.xml'
-            archiveArtifacts artifacts: 'trivy-full-report.html', fingerprint: true
+            archiveArtifacts artifacts: 'trivy-full-report.xml', fingerprint: true
         }
         success {
             echo '✅ Pipeline completed successfully!'
