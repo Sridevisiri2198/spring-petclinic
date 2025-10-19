@@ -74,7 +74,7 @@ pipeline {
                         --format template \
                         --template "@/usr/local/share/trivy/templates/html.tpl" \
                         --scanners vuln \
-                        --severity HIGH,CRITICAL \
+                        --severity LOW,MEDIUM,HIGH,CRITICAL \
                         --exit-code 0 \
                         -o trivy-full-report.html \
                         699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:jenkinspipe
