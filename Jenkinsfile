@@ -67,6 +67,13 @@ pipeline {
                 }
             }
         }
+        stage('Trivy Image scanning') {
+            steps {
+                sh '''
+                   trivy image 699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:App3
+                '''
+            }
+        }
     }
 
     post {
