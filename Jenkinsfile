@@ -52,7 +52,6 @@ pipeline {
 
         stage('Docker Build') {
             steps {
-                // Authenticate Docker to JFrog using Jenkins credentials
                 withCredentials([usernamePassword(
                     credentialsId: 'myjfrogidentity_token', 
                     usernameVariable: 'JFROG_USER', 
@@ -67,15 +66,16 @@ pipeline {
                 }
             }
         }
+
         stage('Trivy Image scanning') {
             steps {
                 sh '''
                    trivy image \
-                        --format  table \
+                        --format table \
                         --scanners vuln \
                         --severity HIGH,CRITICAL \
                         --exit-code 0 \
-                        -o trivy-full-report.txt
+                        -o trivy-full-report.txt \
                         699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:jenkinspipe
                 '''
             }
@@ -86,7 +86,7 @@ pipeline {
         always {
             archiveArtifacts artifacts: '**/target/*.jar'
             junit '**/target/surefire-reports/*.xml'
-            junit testResults:'trivy-full-report.xml', allowEmptyResults: true
+            echo '✅ Trivy table report saved to trivy-full-report.txt (not XML, cannot be parsed by JUnit)'
         }
         success {
             echo '✅ Pipeline completed successfully!'
