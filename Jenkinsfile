@@ -84,7 +84,7 @@ pipeline {
         always {
             archiveArtifacts artifacts: '**/target/*.jar'
             junit '**/target/surefire-reports/*.xml'
-            archiveArtifacts artifacts: 'trivy-full-report.xml', fingerprint: true
+            junit 'trivy-full-report.xml', fingerprint: true
         }
         success {
             echo '✅ Pipeline completed successfully!'
