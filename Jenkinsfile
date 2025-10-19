@@ -71,7 +71,7 @@ pipeline {
             steps {
                 sh '''
                    trivy image \
-                        --format json \
+                        --format table \
                         --scanners vuln \
                         --severity HIGH,CRITICAL \
                         --exit-code 0 \
