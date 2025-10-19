@@ -72,7 +72,7 @@ pipeline {
                 sh '''
                    trivy image \
                         --format table \
-                        -o trivy-full-report.xml \
+                        -o trivy-full-report.txt \
                         699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:jenkinspipe
                 '''
             }
