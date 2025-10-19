@@ -71,8 +71,11 @@ pipeline {
             steps {
                 sh '''
                    trivy image \
-                        --format  template
-                        --template "@/usr/local/share/trivy/templates/junit.tpl" \
+                        --format  table
+                        "@/usr/local/share/trivy/templates/junit.tpl" \
+                        --scanners vuln \
+                        --severity HIGH,CRITICAL \
+                        --exit-code 0 \
                         699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:jenkinspipe
                 '''
             }
