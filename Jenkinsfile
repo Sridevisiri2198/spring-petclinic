@@ -71,11 +71,11 @@ pipeline {
             steps {
                 sh '''
                    trivy image \
-                        --format table \
+                        --format json \
                         --scanners vuln \
                         --severity HIGH,CRITICAL \
                         --exit-code 0 \
-                        -o trivy-full-report.txt \
+                        -o trivy-full-report.json \
                         699475951176.dkr.ecr.eu-north-1.amazonaws.com/springpetrepository:jenkinspipe
                 '''
             }
@@ -86,7 +86,7 @@ pipeline {
         always {
             archiveArtifacts artifacts: '**/target/*.jar'
             junit '**/target/surefire-reports/*.xml'
-            echo '✅ Trivy table report saved to trivy-full-report.txt (not XML, cannot be parsed by JUnit)'
+            echo '✅ Trivy table report saved to trivy-full-report.json (not XML, cannot be parsed by JUnit)'
         }
         success {
             echo '✅ Pipeline completed successfully!'
